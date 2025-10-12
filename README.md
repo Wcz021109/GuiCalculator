@@ -1,3 +1,3 @@
 # UiCalculator
-Just a simple calculator.\n
+Just a simple calculator.
 This is a project for pratise.
