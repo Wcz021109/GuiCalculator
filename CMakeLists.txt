@@ -7,20 +7,22 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 COMPONENTS
-        Core
-        Gui
-        Widgets
+            Core
+            Gui
+            Widgets
         REQUIRED)
 
 add_executable(GuiCalculator src/main.cpp)
 
 add_subdirectory(src/calculate_core)
 add_subdirectory(src/mainwindow)
+#add_subdirectory(src/memory)
 
 target_link_libraries(GuiCalculator
         PRIVATE
             CalculateCore
             Mainwindow
+#            Memory
         PUBLIC
             Qt::Core
             Qt::Gui
