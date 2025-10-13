@@ -7,13 +7,13 @@ target_include_directories(Mainwindow PUBLIC
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Mainwindow
-        PRIVATE
-            Qt::Core
-            Qt::Gui
-            Qt::Widgets
-        STATIC
-            CalculateCore
+target_link_libraries(Mainwindow PRIVATE
+        CalculateCore
+        Memory
+
+        Qt::Core
+        Qt::Gui
+        Qt::Widgets
 )
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION mainwindow.h)

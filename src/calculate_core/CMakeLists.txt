@@ -8,6 +8,8 @@ target_include_directories(CalculateCore PUBLIC
 )
 
 target_link_libraries(CalculateCore PRIVATE
+        Memory
+
         Qt::Core
 )
 
