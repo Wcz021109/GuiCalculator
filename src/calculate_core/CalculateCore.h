@@ -1,7 +1,7 @@
 #ifndef GUICALCULATOR_CALCULATECORE_H
 #define GUICALCULATOR_CALCULATECORE_H
 
-//  #include "Memory.h"
+//#include "Memory.h"
 
 #include <QObject>
 #include <QString>
@@ -14,11 +14,13 @@ class CalculateCore : public QObject {
 public:
     explicit CalculateCore(QObject *parent = nullptr);
 
-    ~CalculateCore();
+    ~CalculateCore() override;
 
-    QString formula() const;
-    QString error() const;
-    QString result() const;
+    [[nodiscard]] QString formula() const;
+
+    [[nodiscard]] QString error() const;
+
+    [[nodiscard]] QString result() const;
 
     Q_INVOKABLE void setFormula(const QString &value);
 
@@ -35,13 +37,17 @@ private:
     qreal m_result = 0.0;
     QString errorCode;
 
-    QChar getPriority(const QChar &op1, const QChar &op2) const;
+    [[nodiscard]] static QChar getPriority(const QChar &op1, const QChar &op2);
 
-    bool performCalculation(const qreal &num1, const qreal &num2, const QChar &op, qreal &result);
+    [[nodiscard]] bool performCalculation(const qreal &num1, const qreal &num2, const QChar &op, qreal &result);
 
-    bool isOperator(const QChar &ch) const;
+    [[nodiscard]] bool checkSign(const qint32 &num) const noexcept;
 
-    bool isDigit(const QChar &ch) const;
+    [[nodiscard]] bool isUnarySign(const qint32 &num) const noexcept;
+
+    [[nodiscard]] bool isDigit(const qint32 &num) const noexcept;
+
+    [[nodiscard]] bool isOperator(const qint32 &num) const noexcept;
 
 signals:
     void formulaChanged();

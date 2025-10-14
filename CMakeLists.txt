@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_PREFIX_PATH "D:/Qt/6.9.3/mingw_64")
+
 find_package(Qt6 COMPONENTS
             Core
             Gui
@@ -13,6 +15,7 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_executable(GuiCalculator src/main.cpp)
+add_executable(CalculatorCoreTest test/CalculateCoreTest.cpp)
 
 add_subdirectory(src/calculate_core)
 add_subdirectory(src/mainwindow)
@@ -21,12 +24,21 @@ add_subdirectory(src/mainwindow)
 target_link_libraries(GuiCalculator
         PRIVATE
             CalculateCore
-            Mainwindow
 #            Memory
+            Mainwindow
+            Dialog
         PUBLIC
             Qt::Core
             Qt::Gui
             Qt::Widgets
+)
+target_link_libraries(CalculatorCoreTest
+        PRIVATE
+        CalculateCore
+        PUBLIC
+        Qt::Core
+        Qt::Gui
+        Qt::Widgets
 )
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
