@@ -18,15 +18,14 @@ add_executable(GuiCalculator src/main.cpp)
 add_executable(CalculatorCoreTest test/CalculateCoreTest.cpp)
 
 add_subdirectory(src/calculate_core)
-add_subdirectory(src/mainwindow)
+add_subdirectory(gui)
 #add_subdirectory(src/memory)
 
 target_link_libraries(GuiCalculator
         PRIVATE
             CalculateCore
-#            Memory
+#           Memory
             Mainwindow
-            Dialog
         PUBLIC
             Qt::Core
             Qt::Gui

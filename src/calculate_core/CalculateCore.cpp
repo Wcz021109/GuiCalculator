@@ -19,7 +19,7 @@ QString CalculateCore::error() const {
 }
 
 QString CalculateCore::result() const {
-    return QString::number(m_result,'g',15);
+    return QString::number(m_result, 'g', 15);
 }
 
 void CalculateCore::setFormula(const QString &value) {
@@ -49,14 +49,15 @@ void CalculateCore::chopFromFormula() {
 
 QChar CalculateCore::getPriority(const QChar &op1, const QChar &op2) {
     static QMap<QChar, QMap<QChar, QChar> > opMap{
-        {'+', {{'+', '>'}, {'-', '>'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'(', '<'}, {')', '>'}, {'#', '>'}}},
-        {'-', {{'+', '>'}, {'-', '>'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'(', '<'}, {')', '>'}, {'#', '>'}}},
-        {'*', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '<'}, {'(', '<'}, {')', '>'}, {'#', '>'}}},
-        {'/', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '<'}, {'(', '<'}, {')', '>'}, {'#', '>'}}},
-        {'^', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '>'}, {'(', '<'}, {')', '>'}, {'#', '>'}}},
-        {'(', {{'+', '<'}, {'-', '<'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'(', '<'}, {')', '='}, {'#', '!'}}},
-        {')', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '>'}, {'(', '!'}, {')', '>'}, {'#', '>'}}},
-        {'#', {{'+', '<'}, {'-', '<'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'(', '<'}, {')', '!'}, {'#', '='}}}
+        {'+', {{'+', '>'}, {'-', '>'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '>'}, {'#', '>'}}},
+        {'-', {{'+', '>'}, {'-', '>'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '>'}, {'#', '>'}}},
+        {'*', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '>'}, {'#', '>'}}},
+        {'/', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '>'}, {'#', '>'}}},
+        {'^', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '>'}, {'#', '>'}}},
+        {'F', {{'+', '<'}, {'-', '<'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '='}, {'#', '!'}}},
+        {'(', {{'+', '<'}, {'-', '<'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '='}, {'#', '!'}}},
+        {')', {{'+', '>'}, {'-', '>'}, {'*', '>'}, {'/', '>'}, {'^', '>'}, {'F', '!'},{'(', '!'}, {')', '>'}, {'#', '>'}}},
+        {'#', {{'+', '<'}, {'-', '<'}, {'*', '<'}, {'/', '<'}, {'^', '<'}, {'F', '<'},{'(', '<'}, {')', '!'}, {'#', '='}}}
     };
     return opMap[op1][op2];
 }
@@ -85,31 +86,37 @@ bool CalculateCore::performCalculation(const qreal &num1, const qreal &num2, con
     return true;
 }
 
-bool CalculateCore::checkSign(const qint32 &num ) const noexcept {
+bool CalculateCore::checkSign(const qint32 &num) const noexcept {
     QChar ch = m_formula.at(num);
     return ch == "+" || ch == "-" || ch == "*" || ch == "/" || ch == "^" || ch == "(" || ch == ")" || ch == "#";
 }
+
 bool CalculateCore::isUnarySign(const qint32 &num) const noexcept {
-    if (checkSign(num)){
+    if (checkSign(num)) {
         const QChar ch = m_formula.at(num);
-        if (num==0) {
-            return (ch=='+'||ch=='-');
-        }else if (checkSign(num-1)){
-            return  (ch == '+' || ch == '-' )&&m_formula.at(num-1)!=')';
+        if (num == 0) {
+            return (ch == '+' || ch == '-');
+        } else if (checkSign(num - 1)) {
+            return (ch == '+' || ch == '-') && m_formula.at(num - 1) != ')';
         }
-    }return false;
+    }
+    return false;
 }
 
 bool CalculateCore::isDigit(const qint32 &num) const noexcept {
     return m_formula.at(num).isDigit() || m_formula.at(num) == ".";
 }
 
+bool CalculateCore::isLetter(const qint32 &num) const noexcept {
+    return m_formula.at(num).isLetter();
+}
+
 bool CalculateCore::isOperator(const qint32 &num) const noexcept {
-    if (checkSign(num)&&!isUnarySign(num)) {
+    if (checkSign(num) && !isUnarySign(num)) {
         const QChar ch = m_formula.at(num);
-        if (num==0) return ch=='(';
-        else if (ch=='(') return checkSign(num-1);
-        else return m_formula.at(num-1).isDigit()||m_formula.at(num-1)==')';
+        if (num == 0) return ch == '(';
+        else if (ch == '(') return checkSign(num - 1);
+        else return m_formula.at(num - 1).isDigit() || m_formula.at(num - 1) == ')';
     }
     return false;
 }
@@ -117,12 +124,13 @@ bool CalculateCore::isOperator(const qint32 &num) const noexcept {
 void CalculateCore::calculate() {
     QStack<qreal> OPND;
     QStack<QChar> OPTR;
+    QStack<QString> OPWD;
 
     OPTR.push('#');
     for (qint32 i = 0; i < m_formula.length();) {
         QChar ch = (i < m_formula.length()) ? m_formula.at(i) : '#';
 
-        if (isDigit(i)||isUnarySign(i)) {
+        if (isDigit(i) || isUnarySign(i)) {
             QString number;
             bool ok;
             if (isUnarySign(i)) {
@@ -139,12 +147,26 @@ void CalculateCore::calculate() {
                 emit errorOccurred();
                 return;
             }
+        } else if (isLetter(i)) {
+            QString opLetter;
+            while (!isOperator(i)) {
+                opLetter.append(ch);
+                i++;
+            }
+            if (ch != '(') {
+                errorCode = "Syntax error: Invalid usage of functions.";
+                emit errorOccurred();
+                return;
+            }
+            OPWD.push(opLetter);
+            OPTR.push('F');
+            i++;
         } else if (isOperator(i)) {
             QChar priority = getPriority(OPTR.top(), ch);
             switch (priority.unicode()) {
                 case '>': {
                     if (OPTR.size() < 2) {
-                        errorCode = "Stack error";
+                        errorCode = "Stack error.";
                         emit errorOccurred();
                         return;
                     }
@@ -164,7 +186,10 @@ void CalculateCore::calculate() {
                     i++;
                     break;
                 case '=':
-                    OPTR.pop();
+                    if (OPTR.pop()=='F') {
+                        //qreal funcValue = Function::calculateFunc(OPWD.pop(),OPND.pop());
+                        //OPND.push(funcValue);
+                    }
                     i++;
                     break;
                 case '!':
@@ -176,7 +201,7 @@ void CalculateCore::calculate() {
                     emit errorOccurred();
                     break;
             }
-        }else {
+        } else {
             if (checkSign(i)) errorCode = "Syntax error: Unexpected operator.";
             else errorCode = QString(R"("Syntax error: Invalid operator: "%1".")").arg(m_formula.at(i));
             emit errorOccurred();

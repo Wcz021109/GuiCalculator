@@ -17,45 +17,37 @@ public:
     ~CalculateCore() override;
 
     [[nodiscard]] QString formula() const;
-
     [[nodiscard]] QString error() const;
-
     [[nodiscard]] QString result() const;
 
-    Q_INVOKABLE void setFormula(const QString &value);
-
-    Q_INVOKABLE void clear();
-
-    Q_INVOKABLE void appendToFormula(const QChar &input);
-
-    Q_INVOKABLE void chopFromFormula();
-
-    Q_INVOKABLE void calculate();
+public slots:
+    void setFormula(const QString &value);
+    void clear();
+    void calculate();
 
 private:
     QString m_formula;
     qreal m_result = 0.0;
     QString errorCode;
 
-    [[nodiscard]] static QChar getPriority(const QChar &op1, const QChar &op2);
+    [[nodiscard]] bool checkSign(const qint32 &num) const noexcept;
+    [[nodiscard]] bool isUnarySign(const qint32 &num) const noexcept;
+    [[nodiscard]] bool isDigit(const qint32 &num) const noexcept;
+    [[nodiscard]] bool isLetter(const qint32 &num) const noexcept;
+    [[nodiscard]] bool isOperator(const qint32 &num) const noexcept;
 
+    [[nodiscard]] static QChar getPriority(const QChar &op1, const QChar &op2);
     [[nodiscard]] bool performCalculation(const qreal &num1, const qreal &num2, const QChar &op, qreal &result);
 
-    [[nodiscard]] bool checkSign(const qint32 &num) const noexcept;
-
-    [[nodiscard]] bool isUnarySign(const qint32 &num) const noexcept;
-
-    [[nodiscard]] bool isDigit(const qint32 &num) const noexcept;
-
-    [[nodiscard]] bool isOperator(const qint32 &num) const noexcept;
+private slots:
+    void appendToFormula(const QChar &input);
+    void chopFromFormula();
 
 signals:
     void formulaChanged();
-
     void calculateCompleted();
-
     void errorOccurred();
-};
 
+};
 
 #endif //GUICALCULATOR_CALCULATECORE_H
