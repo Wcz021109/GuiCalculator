@@ -13,15 +13,8 @@ public:
     ~DualDisplayPanel() override;
 
 public slots:
-    [[nodiscard]] QString CurrentFormula() const;
-    [[nodiscard]] QString PreviousFormula() const;
-    void setDisplay(const QString &formula);
-    void appendToDisplay(const QString &str);
-    void chopFromDisplay();
-    void displayResult(const QString &result);
-    void displayError(const QString &errorCode);
-    void clearCurrentDisplay();
-    void clearAllDisplay();
+    void setCurrentDisplay(const QString &display) const;
+    void setPreviousDisplay(const QString &display) const;
 
 private:
     QLabel *lblPreviousDisplay;
@@ -29,10 +22,8 @@ private:
     QVBoxLayout *VLay;
 
     void iniUI();
-    static void iniSignalSlots();
+    //信号由父对象统一管理
 
-signals:
-    void displayChanged();
 };
 
 

@@ -1,9 +1,5 @@
 #include "DualDisplayPanel.h"
 
-#include <QBoxLayout.h>
-#include <QFile>
-#include <QTextStream>
-
 DualDisplayPanel::DualDisplayPanel(QWidget *parent) :
         QWidget(parent),
         lblPreviousDisplay(nullptr),
@@ -11,7 +7,6 @@ DualDisplayPanel::DualDisplayPanel(QWidget *parent) :
         VLay(nullptr)
 {
     iniUI();
-    iniSignalSlots();
 }
 
 DualDisplayPanel::~DualDisplayPanel() = default;
@@ -36,63 +31,10 @@ void DualDisplayPanel::iniUI() {
     setLayout(VLay);
 }
 
-QString DualDisplayPanel::CurrentFormula() const {
-    return lblCurrentDisplay->text();
+void DualDisplayPanel::setCurrentDisplay(const QString &display) const{
+    lblCurrentDisplay->setText(display);
 }
 
-QString DualDisplayPanel::PreviousFormula() const {
-    return lblPreviousDisplay->text();
+void DualDisplayPanel::setPreviousDisplay(const QString &display) const{
+    lblPreviousDisplay->setText(display);
 }
-
-void DualDisplayPanel::setDisplay(const QString &formula) {
-    lblCurrentDisplay->setText(formula);
-    emit displayChanged();
-}
-
-void DualDisplayPanel::appendToDisplay(const QString &str){
-    QString currentDisplay = lblCurrentDisplay->text();
-    currentDisplay += str;
-    lblPreviousDisplay->setText(currentDisplay);
-    emit displayChanged();
-}
-
-void DualDisplayPanel::chopFromDisplay() {
-    QString currentDisplay = lblCurrentDisplay->text();
-    currentDisplay.chop(1);
-    lblPreviousDisplay->setText(currentDisplay);
-    emit displayChanged();
-}
-
-void DualDisplayPanel::clearCurrentDisplay(){
-    lblCurrentDisplay->clear();
-    emit displayChanged();
-}
-
-void DualDisplayPanel::clearAllDisplay(){
-    lblCurrentDisplay->clear();
-    lblPreviousDisplay->clear();
-    emit displayChanged();
-}
-
-void DualDisplayPanel::displayResult(const QString &result){
-    QString formula = QString("%1 = %2")
-    .arg(lblCurrentDisplay->text())
-    .arg(result);
-    lblPreviousDisplay->setStyleSheet("color: gray;");
-    lblPreviousDisplay->setText(lblCurrentDisplay->text());
-    lblCurrentDisplay->setText(result);
-    emit displayChanged();
-
-    QFile file("history.txt");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        QTextStream write(&file);
-        write << formula <<Qt::endl;
-    }
-}
-
-void DualDisplayPanel::displayError(const QString &errorCode){
-    lblPreviousDisplay->setStyleSheet("color: red;");
-    lblPreviousDisplay->setText(errorCode);
-}
-
-void DualDisplayPanel::iniSignalSlots(){}

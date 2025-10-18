@@ -1,5 +1,6 @@
 add_library(Mainwindow STATIC
         mainwindow.cpp
+        ../include/iniEnumStruct.h
 )
 
 target_include_directories(Mainwindow PUBLIC

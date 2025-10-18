@@ -1,5 +1,6 @@
 #include "CalculateCore.h"
 
+#include <filesystem>
 #include <QStack>
 #include <QDebug>
 
@@ -9,43 +10,6 @@ CalculateCore::CalculateCore(QObject *parent)
 }
 
 CalculateCore::~CalculateCore() = default;
-
-QString CalculateCore::formula() const {
-    return m_formula;
-}
-
-QString CalculateCore::error() const {
-    return errorCode;
-}
-
-QString CalculateCore::result() const {
-    return QString::number(m_result, 'g', 15);
-}
-
-void CalculateCore::setFormula(const QString &value) {
-    if (m_formula != value) {
-        m_formula = value;
-        emit formulaChanged();
-    }
-}
-
-void CalculateCore::clear() {
-    m_formula.clear();
-    m_result = 0.0;
-    emit formulaChanged();
-}
-
-void CalculateCore::appendToFormula(const QString &input) {
-    m_formula.append(input);
-    emit formulaChanged();
-}
-
-void CalculateCore::chopFromFormula(const qint32 &chopNum) {
-    if (m_formula.length() > chopNum) {
-        m_formula.chop(chopNum);
-        emit formulaChanged();
-    }
-}
 
 QChar CalculateCore::getPriority(const QChar &op1, const QChar &op2) {
     static QMap<QChar, QMap<QChar, QChar> > opMap{
@@ -72,7 +36,7 @@ bool CalculateCore::performCalculation(const qreal &num1, const qreal &num2, con
             break;
         case '/': {
             if (num2 == 0.0) {
-                errorCode = "Math error: Division by zero.";
+                errorOccurred(ErrorCode::Math_error, "Division by zero");
                 break;
             }
             result = num1 / num2;
@@ -80,95 +44,65 @@ bool CalculateCore::performCalculation(const qreal &num1, const qreal &num2, con
         }
         case '^': result = pow(num1, num2);
             break;
-        default: errorCode = "Syntax error: Invalid operation.";
+        default: errorOccurred(ErrorCode::Syntax_error, "Invalid operation");
             return false;
     }
     return true;
 }
 
-bool CalculateCore::isDigit(const QChar &ch) noexcept {
-    return ch.isDigit() || ch == "." || ch == "!";
-}
-
-bool CalculateCore::isLower(const QChar &ch) noexcept {
-    return ch.isLower();
-}
-
-bool CalculateCore::isUpper(const QChar &ch) noexcept {
-    return ch.isUpper();
-}
-
-bool CalculateCore::isOperator(const QChar &ch) noexcept {
-    return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' || ch == '(' || ch == ')' || ch == ',' || ch == '%' || ch == '#';
-}
-
-void CalculateCore::calculate() {
+void CalculateCore::do_calculate(const QList<InputUnit> &formula) {
     QStack<qreal> OPND;
     QStack<QChar> OPTR;
-    QStack<QString> OPWD;
+    QStack<QString> OPFC;
 
     OPTR.push('#');
 
-    const QChar *ptr = m_formula.constData();
-    const QChar *start = m_formula.constBegin();
-    const QChar *end = m_formula.constEnd();
-    while (ptr < end) {
-        if (isDigit(*ptr)||(ptr == start && *ptr=='-')) {
+    QList<InputUnit>::const_iterator formula_iterator = formula.constBegin();
+    while (formula_iterator < formula.constEnd()) {
+        if (formula_iterator->keyType == InputType::Digit
+            || (formula_iterator==formula.constBegin() && formula_iterator->keyValue == "-")) {
             QString number;
             bool ok;
-            if (*ptr == '!'||*ptr == '-') {
+            if (formula_iterator->keyValue == "!"||formula_iterator->keyValue == "-") {
                 number.append('-');
-                ptr++;
-                if (ptr >= end) break;
+                ++formula_iterator;
+                if (formula_iterator==formula.constEnd()) break;
             }
-            while (ptr < end && (isDigit(*ptr) || *ptr == '.')) {
-                number.append(*ptr);
-                ptr++;
+            while (formula_iterator < formula.constEnd() && formula_iterator->keyType == InputType::Digit) {
+                number.append(formula_iterator->keyValue);
+                ++formula_iterator;
             }
-            if (*ptr == '%') {
-                OPND.push(number.toDouble(&ok) * 0.01);
-                ptr++;
-            }
-            else OPND.push(number.toDouble(&ok));
+            qreal m_num = number.toDouble(&ok);
             if (!ok) {
-                errorCode = QString(R"("Math error: Invalid number: "%1".)").arg(number);
-                emit errorOccurred();
+                emit errorOccurred(ErrorCode::Math_error,QString(R"(Invalid number: "%1")").arg(number));
                 return;
             }
-        } else if (isLower(*ptr)) {
-            QString opFunction;
-            while (ptr < end && !isOperator(*ptr)) {
-                opFunction.append(ptr);
-                ptr++;
-            }
-            if (*ptr != '(') {
-                errorCode = "Syntax error: Invalid usage of functions.";
-                emit errorOccurred();
+            if (formula_iterator->keyType == InputType::Suffix) {
+                //OPND.push(Memory::operateSuffix(m_num))
+                OPND.push(m_num);
+                ++formula_iterator;
+            }else OPND.push(m_num);
+        } else if (formula_iterator->keyType==InputType::Function) {
+            OPFC.push(formula_iterator->keyValue);
+            if (formula_iterator->keyValue != "(") {
+                emit errorOccurred(ErrorCode::Syntax_error, "Invalid usage of functions");
                 return;
             }
-            OPWD.push(opFunction);
             OPTR.push('F');
-            ptr++;
-        } else if (isUpper(*ptr)) {
-            QString opConst;
-            while (ptr < end && isUpper(*ptr)) {
-                opConst.append(ptr);
-                ptr++;
-            }
-            if (!isOperator(*ptr) || *ptr == '(') {
-                errorCode = "Syntax error: Invalid usage of const.";
-                emit errorOccurred();
+            ++formula_iterator;
+        } else if (formula_iterator->keyType == InputType::Const) {
+            //OPND.push(Function::searchConst(opConst))
+            ++formula_iterator;
+            if (formula_iterator->keyType != InputType::Sign || formula_iterator->keyValue == '(') {
+                emit errorOccurred(ErrorCode::Syntax_error,"Invalid usage of const");
                 return;
             }
-            //OPND.push(Function::searchConst(opConst))
-        } else if (isOperator(*ptr)) {
-            if (*ptr != '(' && (ptr == start || isOperator(*(ptr - 1)))) break;
-            QChar priority = getPriority(OPTR.top(), *ptr);
+        } else if (formula_iterator->keyType == InputType::Sign) {
+            QChar priority = getPriority(OPTR.top(), formula_iterator->keyValue.at(0));
             switch (priority.unicode()) {
                 case '>': {
-                    if (OPTR.size() < 2) {
-                        errorCode = "Stack error.";
-                        emit errorOccurred();
+                    if (OPND.size() < 2) {
+                        emit errorOccurred(ErrorCode::Syntax_error,"Invalid operators");
                         return;
                     }
                     qreal b = OPND.pop();
@@ -176,39 +110,33 @@ void CalculateCore::calculate() {
                     QChar lastTr = OPTR.pop();
                     qreal r = 0;
                     if (!performCalculation(a, b, lastTr, r)) {
-                        errorOccurred();
                         return;
                     }
                     OPND.push(r);
                     break;
                 }
                 case '<':
-                    OPTR.push(*ptr);
-                    ptr++;
+                    OPTR.push(formula_iterator->keyValue.at(0));
+                    ++formula_iterator;
                     break;
                 case '=':
                     if (OPTR.pop() == 'F') {
-                        //qreal funcValue = Function::calculateFunc(OPWD.pop(),OPND.pop());
+                        //qreal funcValue = Function::calculateFunc(OPFC.pop(),OPND.pop());
                         //OPND.push(funcValue);
                     }
-                    ptr++;
+                    ++formula_iterator;
                     break;
                 case '!':
-                    errorCode = "Syntax error: Unexpected bracket.";
-                    emit errorOccurred();
-                    break;
+                    emit errorOccurred(ErrorCode::Syntax_error,"Unexpected bracket.");
+                    return;
                 default:
-                    errorCode = "Syntax error: Invalid operation.";
-                    emit errorOccurred();
-                    break;
+                    emit errorOccurred(ErrorCode::Syntax_error,"Invalid operation.");
+                    return;;
             }
         } else {
-            if (isOperator(*ptr)) errorCode = "Syntax error: Unexpected operator.";
-            else errorCode = QString(R"("Syntax error: Invalid operator: "%1".")").arg(*ptr);
-            emit errorOccurred();
-            break;
+            emit errorOccurred(ErrorCode::Dev_error,QString(R"(Unsupported key: "%1")").arg(formula_iterator->keyValue));
+            return;
         }
     }
-    m_result = OPND.top();
-    emit calculateCompleted();
+    emit calculateCompleted(QString::number(OPND.top()));
 }

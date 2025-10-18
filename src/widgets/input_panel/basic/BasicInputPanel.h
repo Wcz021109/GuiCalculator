@@ -12,19 +12,10 @@ public:
     explicit BasicInputPanel(QWidget *parent = nullptr);
     ~BasicInputPanel() override;
 
-public slots:
-
 private:
-
     void iniUi();
-    void iniSignalSlots();
-
-signals:
-    void do_btnNumberSignPressed();
-    void do_btnConstPressed();
-    void do_btnFunctionPressed();
-
-    void do_bthOperationClicked();
+    void iniGroup();
+    //信号和槽由父对象统一管理
 
 private:
     QGridLayout *GLay;
@@ -41,6 +32,7 @@ private:
     QPushButton *btnNum9;
     QPushButton *btnNumDecimal;
     QPushButton *btnNumPercent;
+    QPushButton *btnNumTNegative;
 
     QPushButton *btnSigPlus;
     QPushButton *btnSigMinus;
@@ -50,18 +42,32 @@ private:
     QPushButton *btnSigParentLeft;
     QPushButton *btnSigParentRight;
 
+    QPushButton *btnFunctionRandom;
+    QPushButton *btnFunctionReciprocal;
     QPushButton *btnFunctionSci;
     QPushButton *btnFunctionSqr;
     QPushButton *btnFunctionSqrt;
-    QPushButton *btnFunctionRandom;
 
     QPushButton *btnConstAns;
-    QPushButton *btnConstPi;
     QPushButton *btnConstExp;
+    QPushButton *btnConstPi;
 
     QPushButton *btnOperClear;
     QPushButton *btnOprDelete;
     QPushButton *btnOprEqual;
+
+    QVector<QPushButton *> btnNumberList;
+    QVector<QPushButton *> btnSignList;
+    QVector<QPushButton *> btnFunctionList;
+    QVector<QPushButton *> btnConstList;
+    QVector<QPushButton *> btnOperationList;
+
+signals:
+    void btnNumberSignClicked();
+    void btnConstClicked();
+    void btnFunctionClicked();
+    void bthOperationClicked();
+
 };
 
 
