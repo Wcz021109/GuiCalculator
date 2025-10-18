@@ -13,4 +13,4 @@ target_link_libraries(BasicInputPanel PRIVATE
         Qt::Widgets
 )
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION BasicInputPanel.h)
+install(DIRECTORY . DESTINATION BasicInputPanel.h)

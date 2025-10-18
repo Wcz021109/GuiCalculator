@@ -13,4 +13,4 @@ target_link_libraries(MemoryPanel PRIVATE
         Qt::Widgets
 )
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION MemoryPanel.h)
+install(DIRECTORY . DESTINATION MemoryPanel.h)

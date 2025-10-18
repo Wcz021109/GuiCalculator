@@ -22,6 +22,8 @@ public:
 
 public slots:
     void setFormula(const QString &value);
+    void appendToFormula(const QString &input);
+    void chopFromFormula(const qint32 &chopNum);
     void clear();
     void calculate();
 
@@ -30,18 +32,13 @@ private:
     qreal m_result = 0.0;
     QString errorCode;
 
-    [[nodiscard]] bool checkSign(const qint32 &num) const noexcept;
-    [[nodiscard]] bool isUnarySign(const qint32 &num) const noexcept;
-    [[nodiscard]] bool isDigit(const qint32 &num) const noexcept;
-    [[nodiscard]] bool isLetter(const qint32 &num) const noexcept;
-    [[nodiscard]] bool isOperator(const qint32 &num) const noexcept;
+    [[nodiscard]] static bool isDigit(const QChar &ch) noexcept;
+    [[nodiscard]] static bool isLower(const QChar &ch) noexcept;
+    [[nodiscard]] static bool isUpper(const QChar &ch) noexcept;
+    [[nodiscard]] static bool isOperator(const QChar &ch) noexcept;
 
     [[nodiscard]] static QChar getPriority(const QChar &op1, const QChar &op2);
     [[nodiscard]] bool performCalculation(const qreal &num1, const qreal &num2, const QChar &op, qreal &result);
-
-private slots:
-    void appendToFormula(const QChar &input);
-    void chopFromFormula();
 
 signals:
     void formulaChanged();

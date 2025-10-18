@@ -16,7 +16,7 @@ public slots:
     [[nodiscard]] QString CurrentFormula() const;
     [[nodiscard]] QString PreviousFormula() const;
     void setDisplay(const QString &formula);
-    void appendToDisplay(const QChar &ch);
+    void appendToDisplay(const QString &str);
     void chopFromDisplay();
     void displayResult(const QString &result);
     void displayError(const QString &errorCode);

@@ -19,16 +19,16 @@ DualDisplayPanel::~DualDisplayPanel() = default;
 void DualDisplayPanel::iniUI() {
     lblCurrentDisplay=new QLabel(this);
     lblCurrentDisplay->setText("");
-    lblCurrentDisplay->setFont(QFont("Arial", 24));
+    lblCurrentDisplay->setFont(QFont("Arial", 30));
     lblCurrentDisplay->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-    lblCurrentDisplay->setMinimumSize(QSize(300, 50));
+    lblCurrentDisplay->setMinimumSize(QSize(200, 50));
 
     lblPreviousDisplay=new QLabel(this);
     lblPreviousDisplay->setText("");
     lblPreviousDisplay->setFont(QFont("Arial", 12));
     lblPreviousDisplay->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     lblPreviousDisplay->setStyleSheet("color: gray;");
-    lblPreviousDisplay->setMinimumSize(QSize(300, 25));
+    lblPreviousDisplay->setFixedSize(QSize(200, 20));
 
     VLay = new QVBoxLayout(this);
     VLay->addWidget(lblPreviousDisplay);
@@ -49,9 +49,9 @@ void DualDisplayPanel::setDisplay(const QString &formula) {
     emit displayChanged();
 }
 
-void DualDisplayPanel::appendToDisplay(const QChar &ch){
+void DualDisplayPanel::appendToDisplay(const QString &str){
     QString currentDisplay = lblCurrentDisplay->text();
-    currentDisplay.append(ch);
+    currentDisplay += str;
     lblPreviousDisplay->setText(currentDisplay);
     emit displayChanged();
 }

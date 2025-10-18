@@ -11,16 +11,12 @@ target_link_libraries(Mainwindow PRIVATE
         CalculateCore
 #       Memory
         DualDisplayPanel
-        MemoryPanel
         BasicInputPanel
+        MemoryPanel
 
         Qt::Core
         Qt::Gui
         Qt::Widgets
 )
-
-add_subdirectory(widgets/display_panel/dual)
-add_subdirectory(widgets/memory_panel)
-add_subdirectory(widgets/input_panel/basic)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION mainwindow.h)

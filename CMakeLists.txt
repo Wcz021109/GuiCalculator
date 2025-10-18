@@ -17,9 +17,7 @@ find_package(Qt6 COMPONENTS
 add_executable(GuiCalculator src/main.cpp)
 add_executable(CalculatorCoreTest test/CalculateCoreTest.cpp)
 
-add_subdirectory(src/calculate_core)
-add_subdirectory(gui)
-#add_subdirectory(src/memory)
+add_subdirectory(src)
 
 target_link_libraries(GuiCalculator
         PRIVATE
@@ -61,7 +59,7 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
                 "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
     endif ()
-    foreach (QT_LIB Core Gui Widgets)
+    foreach (QT_LIB src/core Gui Widgets)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}${DEBUG_SUFFIX}.dll"
