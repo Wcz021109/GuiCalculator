@@ -1,12 +1,12 @@
-#include "../core/mainwindow.h"
+#include "mainwindow.h"
 
 
 Mainwindow::Mainwindow(QWidget *parent) :
         QMainWindow(parent),
         core(nullptr),
         dualDisplayPanel(nullptr),
-        memoryPanel(nullptr),
-        basicInputPanel(nullptr)
+        basicInputPanel(nullptr),
+        memoryPanel(nullptr)
 {
         iniUi();
 }

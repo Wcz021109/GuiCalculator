@@ -24,7 +24,10 @@ private:
     BasicInputPanel basicInputPanel;
 
     void iniUi();
-    void iniSignalSlots();
+    void iniCalculateCoreSignalSlots();
+    void iniDualDisplaySignalSlots();
+    void iniBasicInputSignalSlots();
+    void iniMemorySignalSlots();
     void iniSettings();
 
 private slots:

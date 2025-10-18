@@ -20,6 +20,7 @@ public slots:
     void chopFromDisplay();
     void displayResult(const QString &result);
     void displayError(const QString &errorCode);
+    [[nodiscard]] QString formulaRecording() const;
     void clearCurrentDisplay();
     void clearAllDisplay();
 
@@ -28,11 +29,14 @@ private:
     QLabel *lblCurrentDisplay;
     QVBoxLayout *VLay;
 
+    QString r_formula;
+
     void iniUI();
-    static void iniSignalSlots();
+    //信号由父对象统一管理
 
 signals:
     void displayChanged();
+    void recordFormula();
 };
 
 

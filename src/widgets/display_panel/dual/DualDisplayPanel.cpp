@@ -11,7 +11,6 @@ DualDisplayPanel::DualDisplayPanel(QWidget *parent) :
         VLay(nullptr)
 {
     iniUI();
-    iniSignalSlots();
 }
 
 DualDisplayPanel::~DualDisplayPanel() = default;
@@ -75,24 +74,22 @@ void DualDisplayPanel::clearAllDisplay(){
 }
 
 void DualDisplayPanel::displayResult(const QString &result){
-    QString formula = QString("%1 = %2")
+    r_formula = QString("%1 = %2")
     .arg(lblCurrentDisplay->text())
     .arg(result);
+    emit recordFormula();
     lblPreviousDisplay->setStyleSheet("color: gray;");
     lblPreviousDisplay->setText(lblCurrentDisplay->text());
     lblCurrentDisplay->setText(result);
     emit displayChanged();
-
-    QFile file("history.txt");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        QTextStream write(&file);
-        write << formula <<Qt::endl;
-    }
 }
 
 void DualDisplayPanel::displayError(const QString &errorCode){
     lblPreviousDisplay->setStyleSheet("color: red;");
     lblPreviousDisplay->setText(errorCode);
+    emit displayChanged();
 }
 
-void DualDisplayPanel::iniSignalSlots(){}
+QString DualDisplayPanel::formulaRecording() const {
+    return r_formula;
+}
