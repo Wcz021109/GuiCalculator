@@ -14,7 +14,6 @@ public:
 
 private:
     void iniUi();
-    void iniGroup();
     //信号和槽由父对象统一管理
 
 private:
@@ -31,42 +30,53 @@ private:
     QPushButton *btnNum8;
     QPushButton *btnNum9;
     QPushButton *btnNumDecimal;
-    QPushButton *btnNumPercent;
-    QPushButton *btnNumTNegative;
+    QPushButton *btnNumPNegative;
+    QPushButton *btnNumSPercent;
+    QPushButton *btnNumSSqr;
 
     QPushButton *btnSigPlus;
     QPushButton *btnSigMinus;
     QPushButton *btnSigMultiply;
     QPushButton *btnSigDivide;
+    QPushButton *btnSigSci;
     QPushButton *btnSigPower;
     QPushButton *btnSigParentLeft;
     QPushButton *btnSigParentRight;
 
-    QPushButton *btnFunctionRandom;
-    QPushButton *btnFunctionReciprocal;
-    QPushButton *btnFunctionSci;
-    QPushButton *btnFunctionSqr;
-    QPushButton *btnFunctionSqrt;
+    QPushButton *btnFuncRecp;
+    QPushButton *btnFuncSqrt;
 
     QPushButton *btnConstAns;
     QPushButton *btnConstExp;
     QPushButton *btnConstPi;
+    QPushButton *btnConstRandom;
 
     QPushButton *btnOperClear;
     QPushButton *btnOprDelete;
     QPushButton *btnOprEqual;
 
-    QVector<QPushButton *> btnNumberList;
-    QVector<QPushButton *> btnSignList;
-    QVector<QPushButton *> btnFunctionList;
-    QVector<QPushButton *> btnConstList;
-    QVector<QPushButton *> btnOperationList;
-
 signals:
-    void btnNumberSignClicked();
-    void btnConstClicked();
-    void btnFunctionClicked();
-    void bthOperationClicked();
+    void btnNumberClicked(QVariant btnName);
+    void btnNumPNegativeClicked();
+    void btnNumSPercentClicked();
+    void btnNumSSqurClicked();
+    void btnSigPlusClicked();
+    void btnSigMinusClicked();
+    void btnSigMultiplyClicked();
+    void btnSigDivideClicked();
+    void btnSigSciClicked();
+    void btnSigPowerClicked();
+    void btnSigParentLeftClicked();
+    void btnSigParentRightClicked();
+    void btnFuncRecpClicked();
+    void btnFuncSqrtClicked();
+    void btnConstAnsClicked();
+    void btnConstExpClicked();
+    void btnConstPiClicked();
+    void btnConstRandomClicked();
+    void btnOperClearClicked();
+    void btnOperDeleteClicked();
+    void btnOperEqualClicked();
 
 };
 

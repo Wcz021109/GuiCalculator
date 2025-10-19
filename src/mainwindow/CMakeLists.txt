@@ -13,7 +13,6 @@ target_link_libraries(Mainwindow PRIVATE
 #       Memory
         DualDisplayPanel
         BasicInputPanel
-        MemoryPanel
 
         Qt::Core
         Qt::Gui

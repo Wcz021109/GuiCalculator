@@ -14,23 +14,23 @@ BasicInputPanel::BasicInputPanel(QWidget *parent) :
         btnNum8(nullptr),
         btnNum9(nullptr),
         btnNumDecimal(nullptr),
-        btnNumPercent(nullptr),
-        btnNumTNegative(nullptr),
+        btnNumPNegative(nullptr),
+        btnNumSPercent(nullptr),
+        btnNumSSqr(nullptr),
         btnSigPlus(nullptr),
         btnSigMinus(nullptr),
         btnSigMultiply(nullptr),
         btnSigDivide(nullptr),
+        btnSigSci(nullptr),
         btnSigPower(nullptr),
         btnSigParentLeft(nullptr),
         btnSigParentRight(nullptr),
-        btnFunctionRandom(nullptr),
-        btnFunctionReciprocal(nullptr),
-        btnFunctionSci(nullptr),
-        btnFunctionSqr(nullptr),
-        btnFunctionSqrt(nullptr),
+        btnFuncRecp(nullptr),
+        btnFuncSqrt(nullptr),
         btnConstAns(nullptr),
         btnConstExp(nullptr),
         btnConstPi(nullptr),
+        btnConstRandom(nullptr),
         btnOperClear(nullptr),
         btnOprDelete(nullptr),
         btnOprEqual(nullptr)
@@ -39,33 +39,6 @@ BasicInputPanel::BasicInputPanel(QWidget *parent) :
 }
 
 BasicInputPanel::~BasicInputPanel() = default;
-
-void BasicInputPanel::iniGroup() {
-    btnNumberList.append(btnNum0);
-    btnNumberList.append(btnNum1);
-    btnNumberList.append(btnNum2);
-    btnNumberList.append(btnNum3);
-    btnNumberList.append(btnNum4);
-    btnNumberList.append(btnNum5);
-    btnNumberList.append(btnNum6);
-    btnNumberList.append(btnNum7);
-    btnNumberList.append(btnNum8);
-    btnNumberList.append(btnNum9);
-
-    btnSignList.append(btnSigPlus);
-    btnSignList.append(btnSigMinus);
-    btnSignList.append(btnSigMultiply);
-    btnSignList.append(btnSigDivide);
-    btnSignList.append(btnSigPower);
-    btnSignList.append(btnSigParentLeft);
-    btnSignList.append(btnSigParentRight);
-
-    btnFunctionList.append(btnFunctionRandom);
-    btnFunctionList.append(btnFunctionReciprocal);
-    btnFunctionList.append(btnFunctionSci);
-    btnFunctionList.append(btnFunctionSqr);
-    btnFunctionList.append(btnFunctionSqrt);
-}
 
 void BasicInputPanel::iniUi() {
     btnNum0 = new QPushButton("0");
@@ -78,26 +51,27 @@ void BasicInputPanel::iniUi() {
     btnNum7 = new QPushButton("7");
     btnNum8 = new QPushButton("8");
     btnNum9 = new QPushButton("9");
-    btnNumDecimal = new QPushButton("10");
-    btnNumPercent = new QPushButton("11");
-    btnNumTNegative = new QPushButton("(-)");
+    btnNumDecimal = new QPushButton(".");
+    btnNumPNegative = new QPushButton("(-)");
+    btnNumSPercent = new QPushButton("%");
+    btnNumSSqr = new QPushButton("x²");
 
     btnSigPlus = new QPushButton("＋");
     btnSigMinus = new QPushButton("－");
     btnSigMultiply = new QPushButton("×");
     btnSigDivide = new QPushButton("÷");
+    btnSigSci = new QPushButton("×10ⁿ");
     btnSigPower = new QPushButton("xⁿ");
     btnSigParentLeft = new QPushButton("(");
     btnSigParentRight = new QPushButton(")");
 
-    btnFunctionRandom = new QPushButton("Ran#");
-    btnFunctionReciprocal = new QPushButton("⅟");
-    btnFunctionSqr = new QPushButton("x²");
-    btnFunctionSqrt = new QPushButton("√x");
+    btnFuncRecp = new QPushButton("⅟");
+    btnFuncSqrt = new QPushButton("√x");
 
     btnConstAns = new QPushButton("Ans");
     btnConstExp = new QPushButton("e");
     btnConstPi = new QPushButton("π");
+    btnConstRandom = new QPushButton("Ran#");
 
     btnOperClear = new QPushButton("AC");
     btnOprDelete = new QPushButton("←");
@@ -107,15 +81,15 @@ void BasicInputPanel::iniUi() {
     GLay->setSpacing(3);
     GLay->setContentsMargins(5,5,5,5);
 
-    GLay->addWidget(btnFunctionSci,0,0);
-    GLay->addWidget(btnFunctionReciprocal, 0, 1);
-    GLay->addWidget(btnFunctionSqr, 0, 2);
-    GLay->addWidget(btnFunctionSqrt, 0, 3);
+    GLay->addWidget(btnSigSci,0,0);
+    GLay->addWidget(btnFuncRecp, 0, 1);
+    GLay->addWidget(btnNumSSqr, 0, 2);
+    GLay->addWidget(btnFuncSqrt, 0, 3);
     GLay->addWidget(btnSigPower, 0, 4);
 
     GLay->addWidget(btnConstAns, 1, 0);
-    GLay->addWidget(btnNumTNegative, 1, 1);
-    GLay->addWidget(btnNumPercent, 1, 2);
+    GLay->addWidget(btnNumPNegative, 1, 1);
+    GLay->addWidget(btnNumSPercent, 1, 2);
     GLay->addWidget(btnConstPi, 1, 3);
     GLay->addWidget(btnConstExp, 1, 4);
 

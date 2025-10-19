@@ -4,8 +4,7 @@
 #include "iniEnumStruct.h"
 #include "CalculateCore.h"
 #include "DualDisplayPanel.h"
-#include "MemoryPanel.h"
-#include "BasicInputPanel.h"
+#include "../widgets/input_panel/basic/BasicInputPanel.h"
 
 #include <QMainWindow>
 #include <QVBoxLayout>
@@ -24,7 +23,6 @@ private:
     CalculateCore* core;
     DualDisplayPanel* dualDisplayPanel;
     BasicInputPanel* basicInputPanel;
-    MemoryPanel* memoryPanel;
 
     QVBoxLayout VLay;
 
@@ -35,19 +33,53 @@ private:
     void iniCalculateCoreSignalSlots();
     void iniDualDisplaySignalSlots();
     void iniBasicInputSignalSlots();
-    void iniMemorySignalSlots();
     void iniSettings();
     void iniRouteSignalSlots();
 
 private slots:
+    //来自计算核心
     void do_calculateCompleted(QString result);
     void do_coreErrorOccured(ErrorCode errorCode,QString error);
 
-    void do_formulaRecording();
+    //来自基本按键模块
+    void do_btnNumberClicked();
+    void do_btnNumPNegativeClicked();
+    void do_btnNumSPercentClicked();
+    void do_btnNumSSqrClicked();
+    void do_btnSigPlusClicked();
+    void do_btnSigMinusClicked();
+    void do_btnSigMultipyClicked();
+    void do_btnSigDivideClicked();
+    void do_btnSigSciClicked();
+    void do_btnSigPowerClicked();
+    void do_btnSigParentLeftClicked();
+    void do_btnSigParentRightClicked();
+    void do_btnFuncRecpClicked();
+    void do_btnFuncSqrtClicked();
+    void do_btnConstAnsClicked();
+    void do_btnConstExpClicked();
+    void do_btnConstPiClicked();
+    void do_btnConstRandomClicked();
+    void do_btnOperClearClicked();
+    void do_btnOprDeleteClicked();
+    void do_btnOprEqualClicked();
+
+    //回环槽
+    void do_insertToInput(InputUnit input);
+    void do_deleteFromInput();
+    void do_clearInput();
 
 signals:
+    //至计算核心
     void calculate(QList<InputUnit> &formula);
-    
+
+    //至双行显示
+
+    //回环信号
+    void insertToInput(InputUnit input);
+    void deleteFromInput();
+    void clearInput();
+
 };
 
 

@@ -1,6 +1,4 @@
 add_subdirectory(core/calculate)
-add_subdirectory(core/memory)
 add_subdirectory(mainwindow)
 add_subdirectory(widgets/display_panel/dual)
 add_subdirectory(widgets/input_panel/basic)
-add_subdirectory(widgets/memory_panel)

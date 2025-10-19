@@ -1,15 +1,10 @@
 #include "mainwindow.h"
-#include "CalculateCore.h"
-#include "DualDisplayPanel.h"
-#include "MemoryPanel.h"
-#include "BasicInputPanel.h"
 
 Mainwindow::Mainwindow(QWidget *parent) :
         QMainWindow(parent),
         core(nullptr),
         dualDisplayPanel(nullptr),
-        basicInputPanel(nullptr),
-        memoryPanel(nullptr)
+        basicInputPanel(nullptr)
 {
     iniUi();
 }
@@ -23,13 +18,25 @@ void Mainwindow::iniUi() {
     iniDualDisplaySignalSlots();
     basicInputPanel = new BasicInputPanel(this);
     iniBasicInputSignalSlots();
-    memoryPanel = new MemoryPanel(this);
-    iniMemorySignalSlots();
+    iniRouteSignalSlots();
 }
 
 void Mainwindow::iniCalculateCoreSignalSlots() {
     connect(this, &Mainwindow::calculate, core, &CalculateCore::do_calculate);
     connect(core, &CalculateCore::calculateCompleted, this ,&Mainwindow::do_calculateCompleted);
     connect(core ,&CalculateCore::errorOccurred, this ,&Mainwindow::do_coreErrorOccured);
+}
+
+void Mainwindow::iniDualDisplaySignalSlots() {
+
+}
+
+void Mainwindow::iniBasicInputSignalSlots() {
+}
+
+void Mainwindow::iniRouteSignalSlots() {
+    connect(this,&Mainwindow::insertToInput,this,&Mainwindow::do_insertToInput);
+    connect(this,&Mainwindow::deleteFromInput,this,&Mainwindow::do_deleteFromInput);
+    connect(this,&Mainwindow::clearInput,this,&Mainwindow::do_clearInput);
 }
 
