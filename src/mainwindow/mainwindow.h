@@ -1,11 +1,12 @@
 #ifndef GUICALCULATOR_MAINWINDOW_H
 #define GUICALCULATOR_MAINWINDOW_H
 
-#include "iniEnumStruct.h"
 #include "CalculateCore.h"
 #include "DualDisplayPanel.h"
-#include "../widgets/input_panel/basic/BasicInputPanel.h"
+#include "BasicInputPanel.h"
 
+#include "unit.h"
+#include "errorCode.h"
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QMenuBar>
@@ -42,27 +43,7 @@ private slots:
     void do_coreErrorOccured(ErrorCode errorCode,QString error);
 
     //来自基本按键模块
-    void do_btnNumberClicked();
-    void do_btnNumPNegativeClicked();
-    void do_btnNumSPercentClicked();
-    void do_btnNumSSqrClicked();
-    void do_btnSigPlusClicked();
-    void do_btnSigMinusClicked();
-    void do_btnSigMultipyClicked();
-    void do_btnSigDivideClicked();
-    void do_btnSigSciClicked();
-    void do_btnSigPowerClicked();
-    void do_btnSigParentLeftClicked();
-    void do_btnSigParentRightClicked();
-    void do_btnFuncRecpClicked();
-    void do_btnFuncSqrtClicked();
-    void do_btnConstAnsClicked();
-    void do_btnConstExpClicked();
-    void do_btnConstPiClicked();
-    void do_btnConstRandomClicked();
-    void do_btnOperClearClicked();
-    void do_btnOprDeleteClicked();
-    void do_btnOprEqualClicked();
+    void do_btnOnBasicInputPanelClicked(InputUnit &input);
 
     //回环槽
     void do_insertToInput(InputUnit input);

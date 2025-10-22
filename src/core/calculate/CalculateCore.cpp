@@ -1,8 +1,6 @@
 #include "CalculateCore.h"
-
-#include <filesystem>
 #include <QStack>
-#include <QDebug>
+#include <QMap>
 
 CalculateCore::CalculateCore(QObject *parent)
     : QObject(parent) {

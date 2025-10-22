@@ -31,12 +31,8 @@ void Mainwindow::iniDualDisplaySignalSlots() {
 
 }
 
-void Mainwindow::iniBasicInputSignalSlots() {
-}
-
 void Mainwindow::iniRouteSignalSlots() {
     connect(this,&Mainwindow::insertToInput,this,&Mainwindow::do_insertToInput);
     connect(this,&Mainwindow::deleteFromInput,this,&Mainwindow::do_deleteFromInput);
     connect(this,&Mainwindow::clearInput,this,&Mainwindow::do_clearInput);
 }
-

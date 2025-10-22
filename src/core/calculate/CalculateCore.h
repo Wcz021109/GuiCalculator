@@ -2,8 +2,9 @@
 #define GUICALCULATOR_CALCULATECORE_H
 
 //#include "Memory.h"
-#include "iniEnumStruct.h"
 
+#include "unit.h"
+#include "errorCode.h"
 #include <QObject>
 #include <QString>
 

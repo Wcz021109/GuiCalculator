@@ -1,11 +1,12 @@
 #ifndef GUICALCULATOR_BASICINPUTPANEL_H
 #define GUICALCULATOR_BASICINPUTPANEL_H
 
+#include "unit.h"
+#include "button.h"
 #include <QWidget>
 #include <QGridLayout>
-#include <QPushButton>
 
-class BasicInputPanel : private QWidget {
+class BasicInputPanel : public QWidget {
     Q_OBJECT
 
 public:
@@ -13,72 +14,54 @@ public:
     ~BasicInputPanel() override;
 
 private:
-    void iniUi();
-    //信号和槽由父对象统一管理
+    void iniInputButtons();
+    void iniOprButtons();
+    void iniLayout();
+    void iniSender();
 
-private:
     QGridLayout *GLay;
     
-    QPushButton *btnNum0;
-    QPushButton *btnNum1;
-    QPushButton *btnNum2;
-    QPushButton *btnNum3;
-    QPushButton *btnNum4;
-    QPushButton *btnNum5;
-    QPushButton *btnNum6;
-    QPushButton *btnNum7;
-    QPushButton *btnNum8;
-    QPushButton *btnNum9;
-    QPushButton *btnNumDecimal;
-    QPushButton *btnNumPNegative;
-    QPushButton *btnNumSPercent;
-    QPushButton *btnNumSSqr;
+    InputButton *btnNum[10];
+    InputButton *btnNumDecimal;
+    InputButton *btnNumNegative;
 
-    QPushButton *btnSigPlus;
-    QPushButton *btnSigMinus;
-    QPushButton *btnSigMultiply;
-    QPushButton *btnSigDivide;
-    QPushButton *btnSigSci;
-    QPushButton *btnSigPower;
-    QPushButton *btnSigParentLeft;
-    QPushButton *btnSigParentRight;
+    InputButton *btnSufPercent;
+    InputButton *btnSufSqr;
 
-    QPushButton *btnFuncRecp;
-    QPushButton *btnFuncSqrt;
+    InputButton *btnSigPlus;
+    InputButton *btnSigMinus;
+    InputButton *btnSigMultiply;
+    InputButton *btnSigDivide;
+    InputButton *btnSigSci;
+    InputButton *btnSigPower;
+    InputButton *btnSigParentLeft;
+    InputButton *btnSigParentRight;
 
-    QPushButton *btnConstAns;
-    QPushButton *btnConstExp;
-    QPushButton *btnConstPi;
-    QPushButton *btnConstRandom;
+    InputButton *btnFuncRecp;
+    InputButton *btnFuncSqrt;
 
-    QPushButton *btnOperClear;
-    QPushButton *btnOprDelete;
-    QPushButton *btnOprEqual;
+    InputButton *btnConstAns;
+    InputButton *btnConstExp;
+    InputButton *btnConstPi;
+    InputButton *btnConstRandom;
+
+    OprButton *btnOprClear;
+    OprButton *btnOprDelete;
+    OprButton *btnOprEqual;
+
+    QVector<InputButton *> btnsInput;
+    QVector<OprButton *> btnsOperation;
+    QVector<MemButton *> btnsMemOpr;
+
+private slots:
+    void send_inputButtonsClicked();
+    void send_oprButtonsClicked();
+    void send_memOprsClicked();
 
 signals:
-    void btnNumberClicked(QVariant btnName);
-    void btnNumPNegativeClicked();
-    void btnNumSPercentClicked();
-    void btnNumSSqurClicked();
-    void btnSigPlusClicked();
-    void btnSigMinusClicked();
-    void btnSigMultiplyClicked();
-    void btnSigDivideClicked();
-    void btnSigSciClicked();
-    void btnSigPowerClicked();
-    void btnSigParentLeftClicked();
-    void btnSigParentRightClicked();
-    void btnFuncRecpClicked();
-    void btnFuncSqrtClicked();
-    void btnConstAnsClicked();
-    void btnConstExpClicked();
-    void btnConstPiClicked();
-    void btnConstRandomClicked();
-    void btnOperClearClicked();
-    void btnOperDeleteClicked();
-    void btnOperEqualClicked();
-
+    void inputButtonsClicked(InputUnit input);
+    void oprButtonClicked(OprUnit opr);
+    void memButtonClicked(MemOprUnit memopr);
 };
-
 
 #endif //GUICALCULATOR_BASICINPUTPANEL_H
