@@ -6,6 +6,7 @@ target_include_directories(Memory PUBLIC
 )
 
 target_link_libraries(Memory PRIVATE
+        CalculateCore
         Qt::Core
 )
 

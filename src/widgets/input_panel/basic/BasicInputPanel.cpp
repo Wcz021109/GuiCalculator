@@ -157,48 +157,48 @@ void BasicInputPanel::iniLayout() {
     setLayout(GLay);
 }
 
-void BasicInputPanel::send_inputButtonsClicked() {
+void BasicInputPanel::send_btnsInputClicked() {
     try {
         InputButton *clickedButton = qobject_cast<InputButton *>(QObject::sender());
         if (!clickedButton) {
             qCritical() << "BasicInputPanel::Not an input button!";
             return;
         }
-        emit inputButtonsClicked(clickedButton->getInputUnit());
+        emit btnsInputClicked(clickedButton->getInputUnit());
     }catch (const std::exception &e) {
-        qCritical() << "BasicInputPanel::Exception in send_inputButtonsClicked: " << e.what();
+        qCritical() << "BasicInputPanel::Exception in send_btnsInputClicked: " << e.what();
     }catch (...) {
-        qCritical() << "BasicInputPanel::Unknown exception in send_inputButtonsClicked";
+        qCritical() << "BasicInputPanel::Unknown exception in send_btnsInputClicked";
     }
 }
 
-void BasicInputPanel::send_oprButtonsClicked() {
+void BasicInputPanel::send_btnsOprClicked() {
     try {
         OprButton *clickedButton = qobject_cast<OprButton *>(QObject::sender());
         if (!clickedButton) {
             qCritical() << "BasicInputPanel::Not an operate button!";
             return;
         }
-        emit oprButtonClicked(clickedButton->getOprUnit());
+        emit btnsOprClicked(clickedButton->getOprUnit());
     }catch (const std::exception &e) {
-        qCritical() << "BasicInputPanel::Exception in send_oprButtonsClicked: " << e.what();
+        qCritical() << "BasicInputPanel::Exception in send_btnsOprClicked: " << e.what();
     }catch (...) {
-        qCritical() << "BasicInputPanel::Unknown exception send_oprButtonsClicked";
+        qCritical() << "BasicInputPanel::Unknown exception send_btnsOprClicked";
     }
 }
 
-void BasicInputPanel::send_memOprsClicked() {
+void BasicInputPanel::send_btnsMemClicked() {
     try {
         MemButton *clickedButton = qobject_cast<MemButton *>(QObject::sender());
         if (!clickedButton) {
             qCritical() << "BasicInputPanel::Not a memorize button!";
             return;
         }
-        emit memButtonClicked(clickedButton->getMemOprUnit());
+        emit btnsMemClicked(clickedButton->getMemOprUnit());
     }catch (const std::exception &e) {
-        qCritical() << "BasicInputPanel::Exception in send_memOprsClicked: " << e.what();
+        qCritical() << "BasicInputPanel::Exception in send_btnsMemClicked: " << e.what();
     }catch (...) {
-        qCritical() << "BasicInputPanel::Unknown exception send_memOprsClicked";
+        qCritical() << "BasicInputPanel::Unknown exception send_btnsMemClicked";
     }
 }
 

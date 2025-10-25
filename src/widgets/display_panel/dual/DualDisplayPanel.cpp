@@ -2,8 +2,8 @@
 
 DualDisplayPanel::DualDisplayPanel(QWidget *parent) :
         QWidget(parent),
-        lblPreviousDisplay(nullptr),
-        lblCurrentDisplay(nullptr),
+        lblFormula(nullptr),
+        lblAns(nullptr),
         VLay(nullptr)
 {
     iniUI();
@@ -12,29 +12,44 @@ DualDisplayPanel::DualDisplayPanel(QWidget *parent) :
 DualDisplayPanel::~DualDisplayPanel() = default;
 
 void DualDisplayPanel::iniUI() {
-    lblCurrentDisplay=new QLabel(this);
-    lblCurrentDisplay->setText("");
-    lblCurrentDisplay->setFont(QFont("Arial", 30));
-    lblCurrentDisplay->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-    lblCurrentDisplay->setMinimumSize(QSize(200, 50));
+    lblFormula=new QLabel(this);
+    lblFormula->setText("");
+    lblFormula->setFont(QFont("Arial", 12));
+    lblFormula->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+    lblFormula->setFixedSize(QSize(200, 20));
 
-    lblPreviousDisplay=new QLabel(this);
-    lblPreviousDisplay->setText("");
-    lblPreviousDisplay->setFont(QFont("Arial", 12));
-    lblPreviousDisplay->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    lblPreviousDisplay->setStyleSheet("color: gray;");
-    lblPreviousDisplay->setFixedSize(QSize(200, 20));
+    lblAns=new QLabel(this);
+    lblAns->setText("");
+    lblAns->setFont(QFont("Arial", 30));
+    lblAns->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    lblAns->setMinimumSize(QSize(200, 50));
 
     VLay = new QVBoxLayout(this);
-    VLay->addWidget(lblPreviousDisplay);
-    VLay->addWidget(lblCurrentDisplay);
+    VLay->addWidget(lblFormula);
+    VLay->addWidget(lblAns);
     setLayout(VLay);
 }
 
-void DualDisplayPanel::setCurrentDisplay(const QString &display) const{
-    lblCurrentDisplay->setText(display);
+void DualDisplayPanel::displayFormula(const QList<InputUnit> &formula) const {
+    QString display;
+    for (const InputUnit &input : formula) {
+        display.append(input.keyName);
+    }
+    lblFormula->setText(display);
 }
 
-void DualDisplayPanel::setPreviousDisplay(const QString &display) const{
-    lblPreviousDisplay->setText(display);
+void DualDisplayPanel::displayAnswer(const qreal &result) const{
+    lblAns->setStyleSheet("color: blue");
+    lblAns->setText(QString::number(result));
+}
+
+void DualDisplayPanel::displayError(const ErrorCode &code,const InputUnit &onErrorInput, const QString &error) const {
+    lblAns->setStyleSheet("color: red");
+    switch (code) {
+        case ErrorCode::Math_error: lblAns->setText("Math Error"); break;
+        case ErrorCode::Syntax_error: lblAns->setText("Syntax Error"); break;
+        case ErrorCode::Stack_error: lblAns->setText("Stack Error"); break;
+        case ErrorCode::Dev_error: lblAns->setText("Dev Error"); break;
+        case ErrorCode::Other: lblAns->setText("Unknown Error"); break;
+    };
 }

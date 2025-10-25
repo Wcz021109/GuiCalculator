@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
+#include "unit.h"
+#include "errorCode.h"
 
 class DualDisplayPanel : public QWidget{
     Q_OBJECT;
@@ -13,12 +15,13 @@ public:
     ~DualDisplayPanel() override;
 
 public slots:
-    void setCurrentDisplay(const QString &display) const;
-    void setPreviousDisplay(const QString &display) const;
+    void displayFormula(const QList<InputUnit> &formula) const;
+    void displayAnswer(const qreal &result) const;
+    void displayError(const ErrorCode &code,const InputUnit &onErrorInput, const QString &error) const;
 
 private:
-    QLabel *lblPreviousDisplay;
-    QLabel *lblCurrentDisplay;
+    QLabel *lblFormula;
+    QLabel *lblAns;
     QVBoxLayout *VLay;
 
     void iniUI();

@@ -54,14 +54,14 @@ private:
     QVector<MemButton *> btnsMemOpr;
 
 private slots:
-    void send_inputButtonsClicked();
-    void send_oprButtonsClicked();
-    void send_memOprsClicked();
+    void send_btnsInputClicked();
+    void send_btnsOprClicked();
+    void send_btnsMemClicked();
 
 signals:
-    void inputButtonsClicked(InputUnit input);
-    void oprButtonClicked(OprUnit opr);
-    void memButtonClicked(MemOprUnit memopr);
+    void btnsInputClicked(const InputUnit &input);
+    void btnsOprClicked(const OprUnit &opr);
+    void btnsMemClicked(const MemOprUnit &memOpr);
 };
 
 #endif //GUICALCULATOR_BASICINPUTPANEL_H

@@ -9,4 +9,4 @@ enum class ErrorCode {
     Other = 0,
 };
 
-#endif //GUICALCULATOR_ERRORCODE_H
+#endif //GUICALCULATOR_ERRORCODEH
