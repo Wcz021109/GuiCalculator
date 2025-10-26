@@ -45,7 +45,7 @@ void BasicInputPanel::iniInputButtons() {
         InputUnit(".",InputType::Digit));
     btnsInput.append(btnNumDecimal);
     btnNumNegative = new InputButton("(-)",
-        InputUnit("-","!",InputType::Digit),this);
+        InputUnit("-","-",InputType::Digit),this);
     btnsInput.append(btnNumNegative);
 
     btnSufPercent = new InputButton(
@@ -96,11 +96,7 @@ void BasicInputPanel::iniInputButtons() {
     btnConstPi = new InputButton(
         InputUnit("π","PI",InputType::Const),this);
     btnsInput.append(btnConstPi);
-    btnConstRandom = new InputButton(
-        InputUnit("Ran#","RND",InputType::Const),this);
-    btnsInput.append(btnConstRandom);
 }
-
 void BasicInputPanel::iniOprButtons() {
     btnOprClear = new OprButton("AC",
         OprUnit(OprType::Clear),this);
@@ -109,7 +105,7 @@ void BasicInputPanel::iniOprButtons() {
         OprUnit(OprType::Delete),this);
     btnsOperation.append(btnOprDelete);
     btnOprEqual = new OprButton("＝",
-        OprUnit(OprType::Calculate));
+        OprUnit(OprType::Calculate),this);
     btnsOperation.append(btnOprEqual);
 }
 
@@ -150,8 +146,8 @@ void BasicInputPanel::iniLayout() {
 
     GLay->addWidget(btnNum[0],5,0);
     GLay->addWidget(btnNumDecimal, 5,1);
-    GLay->addWidget(btnOprClear, 5,2);
-    GLay->addWidget(btnOprDelete, 5,3);
+    GLay->addWidget(btnOprDelete, 5,2);
+    GLay->addWidget(btnOprClear, 5,3);
     GLay->addWidget(btnOprEqual, 5,4);
 
     setLayout(GLay);
@@ -204,12 +200,12 @@ void BasicInputPanel::send_btnsMemClicked() {
 
 void BasicInputPanel::iniSender() {
     for (InputButton *btn : btnsInput) {
-        connect(btn,SIGNAL(clicked()),this,SLOT(send_inputButtonsClicked));
+        connect(btn,SIGNAL(clicked()),this,SLOT(send_btnsInputClicked()));
     }
     for (OprButton *btn : btnsOperation) {
-        connect(btn,SIGNAL(clicked()),this,SLOT(send_oprButtonsClicked));
+        connect(btn,SIGNAL(clicked()),this,SLOT(send_btnsOprClicked()));
     }
     for (MemButton *btn : btnsMemOpr) {
-        connect(btn,SIGNAL(clicked()),this,SLOT(send_memOprsClicked));
+        connect(btn,SIGNAL(clicked()),this,SLOT(send_send_btnsMemClicked()));
     }
 }

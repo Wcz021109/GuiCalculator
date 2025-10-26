@@ -1,6 +1,5 @@
 add_library(Mainwindow STATIC
         mainwindow.cpp
-        ../include/unit.h
 )
 
 target_include_directories(Mainwindow PUBLIC
@@ -10,7 +9,6 @@ target_include_directories(Mainwindow PUBLIC
 
 target_link_libraries(Mainwindow PRIVATE
         CalculateCore
-#       Memory
         DualDisplayPanel
         BasicInputPanel
 

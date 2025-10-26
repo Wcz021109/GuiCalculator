@@ -18,12 +18,14 @@ enum class OprType {
     Calculate = 1,
     Delete = 2,
     Clear = 3,
+    Other = 0,
 };
 
 enum class MemOpr {
     Read = 1,
     Store = 2,
-    Append = 3
+    Append = 3,
+    Other = 0,
 };
 
 struct InputUnit {
@@ -35,6 +37,8 @@ struct InputUnit {
         : keyName(name), keyValue(value), keyType(type) {}
     InputUnit (const QString &nmvl, const InputType &type)
         : keyName(nmvl), keyValue(nmvl), keyType(type) {}
+    InputUnit ()
+        : keyName(""), keyValue(""), keyType(InputType::Other) {}
 
 };
 
@@ -43,6 +47,8 @@ struct OprUnit {
     InputType keyType = InputType::Operation;
     OprUnit (const OprType &type)
         : opr(type), keyType(InputType::Operation) {}
+    OprUnit ()
+        : opr(OprType::Other), keyType(InputType::Operation) {}
 };
 
 struct MemOprUnit {
@@ -51,6 +57,8 @@ struct MemOprUnit {
     InputType keyType = InputType::Memory;
     MemOprUnit (const QChar &var, const MemOpr &type)
         : varName(var), memOpr(type), keyType(InputType::Memory) {}
+    MemOprUnit ()
+        : varName(0), memOpr(MemOpr::Other), keyType(InputType::Memory) {}
 };
 
 #endif //GUICALCULATOR_UNIT_H

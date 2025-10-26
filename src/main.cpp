@@ -1,5 +1,4 @@
-#include "CalculateCore.h"
-#include "mainwindow/mainwindow.h"
+#include "mainwindow.h"
 
 #include <QApplication>
 

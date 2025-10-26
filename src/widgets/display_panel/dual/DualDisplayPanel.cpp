@@ -27,6 +27,7 @@ void DualDisplayPanel::iniUI() {
     VLay = new QVBoxLayout(this);
     VLay->addWidget(lblFormula);
     VLay->addWidget(lblAns);
+
     setLayout(VLay);
 }
 
@@ -43,13 +44,13 @@ void DualDisplayPanel::displayAnswer(const qreal &result) const{
     lblAns->setText(QString::number(result));
 }
 
-void DualDisplayPanel::displayError(const ErrorCode &code,const InputUnit &onErrorInput, const QString &error) const {
+void DualDisplayPanel::displayError(const ErrorCode &code) const {
     lblAns->setStyleSheet("color: red");
     switch (code) {
-        case ErrorCode::Math_error: lblAns->setText("Math Error"); break;
-        case ErrorCode::Syntax_error: lblAns->setText("Syntax Error"); break;
+        case ErrorCode::Domain_error: lblAns->setText("Math Error"); break;
+        case ErrorCode::Invalid_argument: lblAns->setText("Syntax Error"); break;
         case ErrorCode::Stack_error: lblAns->setText("Stack Error"); break;
-        case ErrorCode::Dev_error: lblAns->setText("Dev Error"); break;
         case ErrorCode::Other: lblAns->setText("Unknown Error"); break;
+        default: lblAns->setText("Critical error detected"); break;
     };
 }

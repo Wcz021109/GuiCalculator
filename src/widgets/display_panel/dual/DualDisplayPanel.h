@@ -17,7 +17,7 @@ public:
 public slots:
     void displayFormula(const QList<InputUnit> &formula) const;
     void displayAnswer(const qreal &result) const;
-    void displayError(const ErrorCode &code,const InputUnit &onErrorInput, const QString &error) const;
+    void displayError(const ErrorCode &code) const;
 
 private:
     QLabel *lblFormula;

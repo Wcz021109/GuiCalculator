@@ -8,6 +8,8 @@ target_include_directories(BasicInputPanel PUBLIC
 )
 
 target_link_libraries(BasicInputPanel PRIVATE
+        Button
+
         Qt::Core
         Qt::Gui
         Qt::Widgets
