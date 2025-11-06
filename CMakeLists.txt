@@ -18,15 +18,26 @@ find_package(Qt6 COMPONENTS
 
 add_executable(GuiCalculator src/main.cpp)
 
-add_subdirectory(src)
+add_subdirectory(./src/core/calculate)
+add_subdirectory(./src/core/function)
+add_subdirectory(./src/core/memory)
+add_subdirectory(./src/mainwindow)
+add_subdirectory(./src/widgets/display_panel/dual)
+add_subdirectory(./src/widgets/input_panel/basic)
+add_subdirectory(./src/widgets/input_panel/button)
 
 target_link_libraries(GuiCalculator
         PRIVATE
-            Mainwindow
+            MainWindow
+
+            Function
+            Memory
             CalculateCore
-            BasicInputPanel
+
             DualDisplayPanel
+
             Button
+            BasicInputPanel
         PUBLIC
             Qt::Core
             Qt::Gui

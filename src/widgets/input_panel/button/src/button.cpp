@@ -1,4 +1,4 @@
-#include  "button.h"
+#include "button.h"
 
 InputButton::InputButton(const InputUnit &unit, QWidget* parent):
         QPushButton(unit.keyName, parent),

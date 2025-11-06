@@ -24,7 +24,9 @@ enum class OprType {
 enum class MemOpr {
     Read = 1,
     Store = 2,
-    Append = 3,
+    Add = 3,
+    Substract = 4,
+    Clear = 5,
     Other = 0,
 };
 

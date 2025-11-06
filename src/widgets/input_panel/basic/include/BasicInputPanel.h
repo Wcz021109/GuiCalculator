@@ -1,10 +1,13 @@
 #ifndef GUICALCULATOR_BASICINPUTPANEL_H
 #define GUICALCULATOR_BASICINPUTPANEL_H
 
+#include "button.h"
+
 #include "unit.h"
-#include "../button/button.h"
 #include <QWidget>
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 class BasicInputPanel : public QWidget {
     Q_OBJECT
@@ -16,8 +19,17 @@ public:
 private:
     void iniInputButtons();
     void iniOprButtons();
+    void iniMemButtons();
     void iniLayout();
     void iniSender();
+
+    QHBoxLayout *HLay;
+
+    MemButton *btnMemClear;
+    MemButton *btnMemRcl;
+    MemButton *btnMemStore;
+    MemButton *btnMemAdd;
+    MemButton *btnMemSub;
 
     QGridLayout *GLay;
     
@@ -40,7 +52,7 @@ private:
     InputButton *btnFuncRecp;
     InputButton *btnFuncSqrt;
 
-    InputButton *btnConstAns;
+    InputButton *btnMemAns;
     InputButton *btnConstExp;
     InputButton *btnConstPi;
     InputButton *btnConstRandom;
@@ -48,6 +60,8 @@ private:
     OprButton *btnOprClear;
     OprButton *btnOprDelete;
     OprButton *btnOprEqual;
+
+    QVBoxLayout *VLay;
 
     QVector<InputButton *> btnsInput;
     QVector<OprButton *> btnsOperation;

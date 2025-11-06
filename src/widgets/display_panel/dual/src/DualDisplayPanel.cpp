@@ -16,13 +16,12 @@ void DualDisplayPanel::iniUI() {
     lblFormula->setText("");
     lblFormula->setFont(QFont("Arial", 12));
     lblFormula->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    lblFormula->setFixedSize(QSize(200, 20));
 
     lblAns=new QLabel(this);
-    lblAns->setText("");
     lblAns->setFont(QFont("Arial", 30));
     lblAns->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-    lblAns->setMinimumSize(QSize(200, 50));
+    lblAns->setStyleSheet("color: blue");
+    lblAns->setText("0");
 
     VLay = new QVBoxLayout(this);
     VLay->addWidget(lblFormula);

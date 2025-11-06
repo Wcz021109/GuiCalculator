@@ -1,9 +1,10 @@
 add_library(BasicInputPanel STATIC
-        BasicInputPanel.cpp
+        include/BasicInputPanel.h
+        src/BasicInputPanel.cpp
 )
 
 target_include_directories(BasicInputPanel PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 
@@ -15,4 +16,4 @@ target_link_libraries(BasicInputPanel PRIVATE
         Qt::Widgets
 )
 
-install(DIRECTORY . DESTINATION BasicInputPanel.h)
+install(DIRECTORY include DESTINATION include/BasicInputPanel.h)

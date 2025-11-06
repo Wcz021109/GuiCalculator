@@ -1,11 +1,16 @@
 #include "CalculateCore.h"
+
+#include "Function.h"
 #include <QStack>
 #include <QMap>
 #include <QDebug>
-#include <bits/regex_error.h>
 
 CalculateCore::CalculateCore(QObject *parent):
-    QObject(parent) {
+        QObject(parent),
+        memory(nullptr),
+        m_formula()
+{
+    memory = new Memory(this);
     try {
         m_formula = new QList<InputUnit>();
         m_iterator = m_formula->end();
@@ -14,13 +19,10 @@ CalculateCore::CalculateCore(QObject *parent):
         qCritical() << "CalculateCore::Initialization failed: " << e.what();
         exit(-1);
     }
-    iniAutoClear();
+    connect(this,&CalculateCore::calculateCompleted,memory,&Memory::receiveAns);
 }
 
-CalculateCore::~CalculateCore() {
-    delete m_formula;
-    exit(0);
-}
+CalculateCore::~CalculateCore() = default;
 
 QList<InputUnit> CalculateCore::formula() const {
     return *m_formula;
@@ -38,7 +40,9 @@ void CalculateCore::setFormula(const QList<InputUnit> &formula) {
 void CalculateCore::appendToFormula(const InputUnit &formula) {
     try {
         if (finish) {
-            emit autoClearFormula();
+            m_formula->clear();
+            if (formula.keyType==InputType::Sign) m_formula->append(InputUnit("Ans","R",InputType::Memory));
+            emit formulaChanged(*m_formula);
             finish = false;
         }
         if (!m_formula) throw std::runtime_error("Formula list is not initialized");
@@ -49,53 +53,91 @@ void CalculateCore::appendToFormula(const InputUnit &formula) {
     }
 }
 
-void CalculateCore::deleteFromFormula() {
-    if (!m_formula->isEmpty()) {
-        m_formula->removeLast();
-        emit formulaChanged(*m_formula);
-    }
-}
-
-void CalculateCore::clearFormula() {
-    if (!m_formula->isEmpty()) {
-        m_formula->clear();
-        emit formulaChanged(*m_formula);
-    }
-}
-
-void CalculateCore::do_calculate() {
-    if (!m_formula->isEmpty()) {
-        m_formula->append(InputUnit("#","#",InputType::Sign));
-        try {
-            calculate();
-            qDebug() << "CalculateCore::Calculate completed";
-            emit calculateCompleted(m_result);
-        }catch (const std::bad_alloc &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Stack_error, InputUnit(), e.what());
-        }catch (std::overflow_error &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Stack_error, InputUnit(), e.what());
-        }catch (std::out_of_range &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Stack_error, InputUnit(), e.what());
-        }catch (std::invalid_argument &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Invalid_argument, *m_iterator ,e.what());
-        }catch (std::domain_error &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Domain_error, *m_iterator,e.what());
-        }catch (std::logic_error &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Logic_error, *m_iterator,e.what());
-        }catch (std::exception &e) {
-            qDebug() << "CalculateCore::Calculate failed: " << e.what();
-            emit errorOccurred(ErrorCode::Other, InputUnit() ,e.what());
+void CalculateCore::performOpr(const OprUnit &opr) {
+    switch (opr.opr) {
+        case OprType::Delete: {
+            if (!m_formula->isEmpty()) {
+                if (finish) {
+                    finish = false;
+                    break;
+                }
+                m_formula->removeLast();
+                emit formulaChanged(*m_formula);
+            }
+            break;
         }
-        m_formula->removeLast();
+        case OprType::Clear: {
+            if (!m_formula->isEmpty()) {
+                if (finish) finish = false;
+                m_formula->clear();
+                emit formulaChanged(*m_formula);
+            }
+            break;
+        }
+        case OprType::Calculate: {
+            if (!m_formula->isEmpty()) {
+                calculate();
+            }
+            break;
+        }
+        default:qCritical() << "Unknown operation"; break;
     }
 }
 
+void CalculateCore::performMemOpr(const MemOprUnit &mem){
+    InputUnit m_unit = InputUnit("",InputType::Operation);
+    switch (mem.memOpr) {
+        case MemOpr::Clear: {
+            memory->resetVar(mem.varName);
+            break;
+        }
+        case MemOpr::Read: {
+            InputUnit input_unit = InputUnit(mem.varName,InputType::Memory);
+            if (finish == true || m_formula->isEmpty()) {
+                m_result = memory->getVar(mem.varName);
+                emit calculateCompleted(m_result);
+            }
+            appendToFormula(input_unit);
+            break;
+        }
+        case MemOpr::Store: {
+            if (finish) appendToFormula(InputUnit("Ans","R",InputType::Memory));
+            if (!m_formula->isEmpty()) {
+                m_unit.keyName.append("->");
+                m_unit.keyName.append(mem.varName);
+                calculate();
+                memory->setVar(mem.varName, m_result);
+                m_formula->append(m_unit);
+                emit formulaChanged(*m_formula);
+            }
+            break;
+        }
+        case MemOpr::Add: {
+            if (finish) appendToFormula(InputUnit("Ans","R",InputType::Memory));
+            if (!m_formula->isEmpty()) {
+                m_unit.keyName.append("M+");
+                calculate();
+                memory->memoryMuPlus(m_result);
+                m_formula->append(m_unit);
+                emit formulaChanged(*m_formula);
+            }
+            break;
+        }
+        case MemOpr::Substract: {
+            if (finish) appendToFormula(InputUnit("Ans","R",InputType::Memory));
+            if (!m_formula->isEmpty()) {
+                if (finish) appendToFormula(InputUnit("Ans","R",InputType::Memory));
+                m_unit.keyName.append("M-");
+                calculate();
+                memory->memoryMuMinus(m_result);
+                m_formula->append(m_unit);
+                emit formulaChanged(*m_formula);
+            }
+            break;
+        }
+        default:qCritical() << "Unknown operation!"; break;
+    }
+}
 
 QChar CalculateCore::getPriority(const QChar &op1, const QChar &op2) {
     static QMap<QChar, QMap<QChar, QChar> > opMap{
@@ -113,7 +155,7 @@ QChar CalculateCore::getPriority(const QChar &op1, const QChar &op2) {
     return opMap[op1][op2];
 }
 
-qreal CalculateCore::performCalculation(const qreal &num1, const qreal &num2, const QChar &tr) {
+qreal CalculateCore::performCalculation(const qreal &num2, const qreal &num1, const QChar &tr) {
     switch (tr.unicode()) {
         case '+': return num1 + num2;
         case '-': return num1 - num2;
@@ -130,7 +172,8 @@ qreal CalculateCore::performCalculation(const qreal &num1, const qreal &num2, co
     }
 }
 
-void CalculateCore::calculate() {
+void CalculateCore::calculate() try{
+    m_formula->append(InputUnit( "#", InputType::Sign));
     QStack<qreal> OPND;
     QStack<QChar> OPTR;
     QStack<QString> OPFC;
@@ -159,10 +202,10 @@ void CalculateCore::calculate() {
                     throw std::invalid_argument("Invalid number");
                 }
                 if (m_iterator->keyType == InputType::Suffix) {
-                    //OPND.push(Memory::operateSuffix(m_num))
-                    OPND.push(m_num);
+                    m_num = Function::performSuffix(m_num, m_iterator->keyValue);
                     ++m_iterator;
-                } else OPND.push(m_num);
+                }
+                OPND.push(m_num);
                 break;
             }
             case InputType::Function: {
@@ -172,7 +215,7 @@ void CalculateCore::calculate() {
                 break;
             }
             case InputType::Const: {
-                //OPND.push(Function::searchConst(opConst))
+                OPND.push(Function::getConst(m_iterator->keyValue));
                 ++m_iterator;
                 if (m_iterator->keyType != InputType::Sign || m_iterator->keyValue == '(') {
                     --m_iterator;
@@ -180,18 +223,20 @@ void CalculateCore::calculate() {
                 }
                 break;
             }
+            case InputType::Memory: {
+                OPND.push(memory->getVar(m_iterator->keyValue));
+                ++m_iterator;
+                if (m_iterator->keyType != InputType::Sign || m_iterator->keyValue == '(') {
+                    --m_iterator;
+                    throw std::invalid_argument("Invalid usage of variables");
+                }
+            }
             case InputType::Sign: {
                 QChar priority = getPriority(OPTR.top(), m_iterator->keyValue.at(0));
                 switch (priority.unicode()) {
                     case '>': {
                         if (OPND.size() < 2) throw std::invalid_argument("Continuous operators");
-                        qreal b = OPND.pop();
-                        qreal a = OPND.pop();
-                        QChar t = OPTR.pop();
-                        qreal r = 0;
-                        r = performCalculation(a, b, t);
-                        qDebug() << a << t << b << '=' << r;
-                        OPND.push(r);
+                        OPND.push(performCalculation(OPND.pop(), OPND.pop(), OPTR.pop()));
                         break;
                     }
                     case '<': {
@@ -204,9 +249,8 @@ void CalculateCore::calculate() {
                     }
                     case '=': {
                         if (OPTR.pop() == 'F') {
-                            //qreal funcValue = Function::calculateFunc(OPFC.pop(),OPND.pop());
-                            //OPND.push(funcValue);
-                            OPFC.pop();
+                            qreal funcValue = Function::performFormula(OPFC.pop(), OPND.pop());
+                            OPND.push(funcValue);
                         }
                         ++m_iterator;
                         break;
@@ -214,19 +258,44 @@ void CalculateCore::calculate() {
                     case '!': throw std::invalid_argument("Invalid usage of operator");
                     default: throw std::invalid_argument("Unrecognized operator");
                 }
-            break;
+                break;
             }
-            default: throw std::invalid_argument("Unrecogznized input");
+            default: throw std::invalid_argument("Unrecognized input");
         }
     }
     if (OPND.isEmpty()) throw std::invalid_argument("Empty formula");
     m_result = OPND.top();
     qDebug() << "Result: " << m_result;
+    m_formula->removeLast();
+    qDebug() << "CalculateCore::Calculate completed";
+    emit calculateCompleted(m_result);
     finish = true;
-    return;
-}
-
-void CalculateCore::iniAutoClear() {
-    //connect(this, SIGNAL(autoAppendAns()), this, SLOT(appendToFormula()));
-    connect(this,SIGNAL(autoClearFormula()),this,SLOT(clearFormula()));
+} catch (const std::bad_alloc &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Stack_error, InputUnit(), e.what());
+} catch (std::overflow_error &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Stack_error, InputUnit(), e.what());
+} catch (std::out_of_range &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Stack_error, InputUnit(), e.what());
+} catch (std::invalid_argument &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Invalid_argument, *m_iterator, e.what());
+} catch (std::domain_error &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Domain_error, *m_iterator, e.what());
+} catch (std::logic_error &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Logic_error, *m_iterator, e.what());
+} catch (std::exception &e) {
+    m_formula->removeLast();
+    qCritical() << "CalculateCore::Calculate failed: " << e.what();
+    emit errorOccurred(ErrorCode::Other, InputUnit(), e.what());
 }

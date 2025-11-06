@@ -1,14 +1,15 @@
 #ifndef GUICALCULATOR_DISPLAY_H
 #define GUICALCULATOR_DISPLAY_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
 #include "unit.h"
 #include "errorCode.h"
 
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QLabel>
+
 class DualDisplayPanel : public QWidget{
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     explicit DualDisplayPanel(QWidget *parent);

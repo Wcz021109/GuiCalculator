@@ -11,12 +11,12 @@
 #include <QVBoxLayout>
 #include <QMenuBar>
 
-class Mainwindow : public QMainWindow {
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit Mainwindow(QMainWindow *parent = nullptr);
-    ~Mainwindow() override;
+    explicit MainWindow(QMainWindow *parent = nullptr);
+    ~MainWindow() override;
 
 private:
     CalculateCore* core;
@@ -29,16 +29,6 @@ private:
     void iniUi();
     void iniSignalSlots();
     //void iniSettings();
-
-private slots:
-    //来自基本按键模块
-    void receive_btnsOprClicked(const OprUnit &opr);
-    //void receive_btnsMemClicked(const MemOprUnit &memOpr);
-
-signals:
-    void calculate();
-    void deleteFromInput();
-    void clearInput();
 
 };
 
