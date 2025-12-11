@@ -6,7 +6,7 @@
 #include "BasicInputPanel.h"
 
 #include "unit.h"
-#include "errorCode.h"
+#include "error.h"
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QMenuBar>

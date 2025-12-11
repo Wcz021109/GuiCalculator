@@ -2,7 +2,7 @@
 #define GUICALCULATOR_DISPLAY_H
 
 #include "unit.h"
-#include "errorCode.h"
+#include "error.h"
 
 #include <QWidget>
 #include <QVBoxLayout>

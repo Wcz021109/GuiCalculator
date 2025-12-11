@@ -4,7 +4,7 @@
 #include "Memory.h"
 
 #include "unit.h"
-#include "errorCode.h"
+#include "error.h"
 #include <QObject>
 #include <QString>
 
@@ -29,7 +29,6 @@ private:
     Memory* memory;
 
     QList<InputUnit>* m_formula;
-    QList<InputUnit>::iterator m_iterator;
     qreal m_result;
     bool finish = false;
 
@@ -40,7 +39,7 @@ private:
 signals:
     void formulaChanged(const QList<InputUnit> &formula);
     void calculateCompleted(qreal result);
-    void errorOccurred(const ErrorCode &code,const InputUnit &onErrorInput, const QString &error);
+    void errorOccurred(const ErrorCode &code,const QString &error);
 };
 
 #endif //GUICALCULATOR_CALCULATECORE_H

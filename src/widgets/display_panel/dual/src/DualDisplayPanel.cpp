@@ -46,8 +46,8 @@ void DualDisplayPanel::displayAnswer(const qreal &result) const{
 void DualDisplayPanel::displayError(const ErrorCode &code) const {
     lblAns->setStyleSheet("color: red");
     switch (code) {
-        case ErrorCode::Domain_error: lblAns->setText("Math Error"); break;
-        case ErrorCode::Invalid_argument: lblAns->setText("Syntax Error"); break;
+        case ErrorCode::Math_error: lblAns->setText("Math Error"); break;
+        case ErrorCode::Syntax_error: lblAns->setText("Syntax Error"); break;
         case ErrorCode::Stack_error: lblAns->setText("Stack Error"); break;
         case ErrorCode::Other: lblAns->setText("Unknown Error"); break;
         default: lblAns->setText("Critical error detected"); break;
